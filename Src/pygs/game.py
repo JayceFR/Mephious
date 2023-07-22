@@ -40,7 +40,7 @@ class Game():
                 self.e_entities.pop(key)
         self.firefly = None
         if game_items['world'].get("fireflies"):
-            self.firefly = fireflies.Fireflies(0, 100, 3000, 1000)
+            self.firefly = fireflies.Fireflies(0, 100, 6000, 1200)
         self.bg_particle_effect = None
         if game_items['world'].get("leaves")[0]:
             self.bg_particle_effect = bg_particles.Master(game_items['world']['leaves'][1])
@@ -65,7 +65,6 @@ class Game():
         key.move(self.tile_rects)
         while self.run:
             self.clock.tick(60)
-            print(self.clock.get_fps())
             time = pygame.time.get_ticks()
             self.display.redraw()
             #Normal code

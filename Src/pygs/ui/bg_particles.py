@@ -11,7 +11,7 @@ class Master():
         self.img = img
 
     def add_particles(self):
-        self.particles.append(Particles(random.randint(-100,6000)//2, random.randint(-50,50)//2, 5, self.img))
+        self.particles.append(Particles(random.randint(-100,12000)//2, random.randint(-100,-50)//2, 5, self.img))
 
     def recursive_call(self, time, display, scroll, dt):
         if self.particles != []:
@@ -48,7 +48,7 @@ class Particles():
                 self.angle = 0
         self.x += math.sin(math.radians(self.angle)) * dt
         self.y += 0.5 * dt
-        if self.x > 10000 or self.y > 1200:
+        if self.x > 10000 or self.y > 1500:
             self.alive = False
 
     def draw(self, display, scroll):
