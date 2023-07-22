@@ -26,7 +26,7 @@ noise_img = pygame.image.load("./Src/shader/pnoise.png").convert_alpha()
 pass_e_game = {
     'player' : {
         'x' : 1000, 
-        'y' : 200, 
+        'y' : 400, 
         'width' : idle_animation[0].get_width(), 
         'height': idle_animation[0].get_height(), 
         'idle_animation' : idle_animation, 

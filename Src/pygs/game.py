@@ -23,6 +23,7 @@ class Game():
         print(entities)
         self.e_entities = game_items['map'].get('entities')
         self.map = map.Map(game_items['map']['map_loc'], game_items['map']['width_of_tiles'], game_items['map']['location_of_tiles'], game_items['map']['is_there_collide_tiles'], game_items['map']['is_there_non_collide_tiles'], entities )
+        self.map.load_game_enitites([1000,400])
         self.tile_rects, self.entity_loc = self.map.get_rect()
         self.player = player.Player(game_items['player'])
         self.game_items = game_items
@@ -65,7 +66,10 @@ class Game():
         key.move(self.tile_rects)
         while self.run:
             self.clock.tick(60)
+            #print(self.clock.get_fps())
             time = pygame.time.get_ticks()
+            self.map.load_game_enitites([self.player.get_rect().x, self.player.get_rect().y])
+            self.tile_rects, self.entity_loc = self.map.get_rect()
             self.display.redraw()
             #Normal code
             true_scroll[0] += (self.player.get_rect().x - true_scroll[0] - 202) 
