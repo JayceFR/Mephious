@@ -78,10 +78,12 @@ class Map():
     def load_chunk(self, player_loc):
         find_key = [round((player_loc[0]/32)/8), round((player_loc[1]/32)/8)]
         print(find_key)
-        curr_key = str((find_key[1]) * 8) + ":" + str(find_key[0] * 8)
-        if curr_key in self.chunks.keys():
-            map = self.chunks[curr_key]
-            return map
+        maps = []
+        for x in range(4):
+            curr_key = str((find_key[1]) * 8) + ":" + str(find_key[0] * 8)
+            map1 = self.chunks[curr_key]
+            
+        return map
 
     def load_game_enitites(self, player_loc):
         print("actual_player_loc = ", player_loc)
