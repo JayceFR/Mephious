@@ -7,6 +7,7 @@ uniform float time;
 uniform sampler2D noise_tex1;
 uniform int itime;
 uniform int corrupted;
+uniform float shader_val;
 
 uniform float time_scale = 0.25;
 uniform float angle_Const = 0.5;
@@ -28,9 +29,9 @@ void overlay_frag(){
     float noise_val = center_dis + texture(noise_tex1, vec2(px_uvs.x * 1.52 * 2 + itime * 0.001, px_uvs.y * 2)).r * 0.2;
     vec4 dark = vec4(0.086, 0.4549, 0.196, 1.0);
     dark = vec4(0.0, 0.0, 0.0, 1.0);
-    float darkness = max(0, noise_val - 0.7) * 20;
-    //float vignette = max(0, center_dis * center_dis - 0.5) * 20;
-    darkness += center_dis;
+    float darkness = max(0, noise_val - (0.9 - shader_val)) * 20;
+    float vignette = max(0, center_dis * center_dis - 0.5) * 5;
+    darkness += center_dis + vignette;
     f_color = darkness * dark + (1 - darkness) * f_color;
     vec4 ui_color = texture(ui_tex, uvs);
     if (ui_color.a != 0){
@@ -45,7 +46,7 @@ void alone_frag(){
     float noise_val = center_dis + texture(noise_tex1, vec2(px_uvs.x * 1.52 * 2 + itime * 0.001, px_uvs.y * 2)).r * 0.2;
     vec4 dark = vec4(0.086, 0.4549, 0.196, 1.0);
     dark = vec4(0.0, 0.0, 0.0, 1.0);
-    float darkness = max(0, noise_val - 0.7) * 20;
+    float darkness = max(0, noise_val - (0.9 - shader_val)) * 20;
     //float vignette = max(0, center_dis * center_dis - 0.5) * 20;
     darkness += center_dis;
     f_color = darkness * dark + (1 - darkness) * f_color;

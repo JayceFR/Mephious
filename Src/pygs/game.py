@@ -3,10 +3,10 @@
 #Map 
 #Music
 #Cover page
-from .ui import display, grass, fireflies, bg_particles
+from .ui import display, grass, fireflies, bg_particles, rot
 from .entities import player, key as keys, fruits as fruit
 from .map import map
-from .utils import typewriter
+from .utils import typewriter, chuma
 import pygame, random, math, time as t
 class Game():
     def __init__(self, window_size = [0,0], double_buf = True, is_shader = False, vertex_loc = "", fragment_loc = ""):
@@ -46,8 +46,11 @@ class Game():
         self.orange_loc = self.entity_loc['r'][0]
         self.pineapple_loc = self.entity_loc['a'][0]
         self.pineapple = fruit.Fruits(self.pineapple_loc, game_items['map'].get('entities')['a'][0])
+        self.pineapple_chuma = chuma.Chuma(game_items['map'].get('entities')['a'][1])
         self.orange = fruit.Fruits(self.orange_loc, game_items['map'].get('entities')['r'][0])
+        self.orange_chuma = chuma.Chuma(game_items['map'].get('entities')['r'][1])
         self.strawberry = fruit.Fruits(self.strawberry_loc, game_items['map'].get('entities')['s'][0])
+        self.strawberry_chuma = chuma.Chuma(game_items['map'].get('entities')['s'][1])
         if game_items['map'].get("ignore_entities"):
             for key in game_items['map']['ignore_entities']:
                 self.e_entities.pop(key)
@@ -84,7 +87,7 @@ class Game():
         interact_sound = pygame.mixer.Sound("./Assets/Music/interact.wav")
         interact_sound.set_volume(0.2)
         font = pygame.font.Font("./Assets/Fonts/jayce.ttf", 18)
-        typer = typewriter.TypeWriter(font, (255,255,255), 80, 180, 350, 9, interact_sound)
+        typer = typewriter.TypeWriter(font, (255,255,255), 100, 180, 330, 9, interact_sound)
         strawberry_text = [{"text" : ["Hey son", "Mr.Orange wanted your red paint", "That's funny I thought he never liked red", "I am running out of time, please...", "Hmmm.. what would I get in return", "But.... I am diagnosed with Mephoius, which will slowly corrupt me", "I don't care about you", "Ok, what do you want", "Bring me a pair of scissors from Mr.Pineapple", "Let me guess, for your hair?", "Nah, just to get something in return"],
                             "can_show" : False,
                             "before_me": "pineapple",
@@ -93,7 +96,8 @@ class Game():
                             "default" : False }, 
                             {"text" : ["Mr.Pineapple was looking for you"],
                              "default" : True, 
-                             "can_show" : False
+                             "can_show" : False,
+                             "whoami" : "strawberry"
                             }]
         orange_text = [{"text" : ["If this is not a dream, the Corrupted Mephoius banana in flesh", "Wow, that was spooky", "What brings you here?", "I need to deliver a pair of scissors to Ms.Strawberry", "Oh! There is a problem in that", "What?", "My scissors were stolen and buried by Mr.Pineapple", "I hate that pineapple", "You can find the location of the scissors in this map", "Thank you"],
                             "can_show" : False,
@@ -103,7 +107,8 @@ class Game():
                             "default" : False },
                         {"text" : ["How long can you live before the corruption takes you"],
                          "default" : True,
-                         "can_show" : False}]
+                         "can_show" : False,
+                         "whoami" : "orange"}]
         pineapple_text = [{"text" : ["Hey chap, any plans for tomorrow?", "Hmmm...", "Except corrupting and rotting to death... lol", "Can I please borrow your vitamin B9", "Hmmm.. what would I get in return", "But I am going to rot soon", "I don't care about you", "Ok, what do you want", "Go get the red paint from Ms.Strawberry", "Why?", "For my car, GET IT"],
                             "can_show" : True,
                             "default" : False,
@@ -111,15 +116,33 @@ class Game():
                             "who_is_next" : "strawberry" }, 
                             {"text" : ["Where is my paint?"],
                              "can_show" : False,
-                             "default" : True}]
-        fruits = {"strawberry" : [self.strawberry, strawberry_text], "orange" : [self.orange, orange_text], "pineapple" : [self.pineapple, pineapple_text]}
+                             "default" : True, 
+                             "whoami" : "pineapple"}]
+        fruits = {"strawberry" : [self.strawberry, strawberry_text, self.strawberry_chuma, [0,125]], "orange" : [self.orange, orange_text, self.orange_chuma, [0,150]], "pineapple" : [self.pineapple, pineapple_text, self.pineapple_chuma, [-20, 125]]}
         write_text = False
         click = False
+        corruption_last_update = 0
+        corruption_cooldown = 60
+        corruption_level = 0
+        corrupt_binary = 1
+        change_corruption = False
+        change_corruption_last_update = 0
+        corruption_particles = rot.Enchanted([1000,400])
+        shader_val = 0
         while self.run:
             self.clock.tick(60)
             #print(round(self.clock.get_fps()))
             shader_time += 0.025
             time = pygame.time.get_ticks()
+            second_time = round(t.time() - start_time)
+            if second_time - corruption_last_update > corruption_cooldown:
+                corruption_last_update = second_time
+                corruption_level += 1
+                change_corruption = True
+                shader_val += 0.1
+                print(shader_val)
+                change_corruption_last_update = time
+                self.player.change_corruption_level(corruption_level)
             self.display.redraw()
             #Normal code
             true_scroll[0] += (self.player.get_rect().x - true_scroll[0] - 202) 
@@ -134,6 +157,17 @@ class Game():
                     self.display.blit(self.e_entities[key][0], (loc[0] - scroll[0] - self.e_entities[key][1][0], loc[1] - scroll[1] - self.e_entities[key][1][1]))
             self.player.move(self.tile_rects, time, write_text)
             self.player.draw(time, self.display, scroll)
+            if change_corruption:
+                if time - change_corruption_last_update < 10000:
+                    val = 50
+                    corrupt_binary = 0
+                    corruption_particles.update([self.player.get_rect().x, self.player.get_rect().y + 15])
+                    corruption_particles.draw(time, self.display.display, scroll, (55,55,55))
+                else:
+                    corruption_particles.clear()
+                    val = 0
+                    change_corruption = False
+                    corrupt_binary = 1
             #Moving and drawing fruits
             for key in fruits.keys():
                 fruits[key][0].move(time, self.tile_rects, self.player.get_rect().x)
@@ -153,7 +187,8 @@ class Game():
                                         correct_dict = dict
                             typer.write(correct_dict['text'])
             if write_text:
-                write_text = not typer.update(time, self.display.ui_display)
+                write_text = not typer.update(time, self.display.ui_display, [350, 220])
+                fruits[correct_dict['whoami']][2].draw(time, self.display.ui_display, [0,0], fruits[correct_dict['whoami']][3])
                 if not write_text and not correct_dict['default']:
                     next_key = correct_dict['who_is_next']
                     if fruits.get(next_key) != None:
@@ -161,12 +196,9 @@ class Game():
                             if not dict['default']:
                                 if dict['before_me'] == correct_dict['whoami']:
                                     dict['can_show'] = True
-            '''
+            
             #Sillhouette
             self.display.sillhouette(val)
-            val += 1
-            if val > 255:
-                val = 0'''
             #grass movement
             if time - self.grass_last_update > self.grass_cooldown:
                 for grass in self.grasses:
@@ -186,4 +218,4 @@ class Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         click = True
-            self.display.clean({"noise_tex1": self.shader_stuf['noise_img']}, { "itime": int((t.time() - start_time) * 100), "time" : shader_time, "corrupted" : 0})
+            self.display.clean({"noise_tex1": self.shader_stuf['noise_img']}, { "itime": int((t.time() - start_time) * 100), "time" : shader_time, "corrupted" : corrupt_binary, "shader_val" : shader_val})

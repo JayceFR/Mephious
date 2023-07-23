@@ -37,6 +37,7 @@ class Player():
         self.rotate_jump = False
         self.angle_rot = 0
         self.help = misc.Misc()
+        self.corrupt_stage = 0
         #Jump sparks
         self.jump_spark_ani = chuma.Chuma(items['jump_spark_ani'])
         self.jump_loc = []
@@ -157,6 +158,9 @@ class Player():
                         self.jump_count -= 1
                         self.jump_last_update = time
     
+    def change_corruption_level(self, stage):
+        self.corrupt_stage = max(0, stage)
+    
     def draw(self, time, display, scroll):
         self.display_x = self.rect.x
         self.display_y = self.rect.y
@@ -164,29 +168,29 @@ class Player():
         self.rect.y -= scroll[1]
         if self.air_timer >= 1 and self.air_timer > 20:
             if self.facing_right:
-                display.blit(self.fall_img, self.rect)
+                display.blit(self.fall_img[self.corrupt_stage], self.rect)
             else:
-                flip = self.fall_img.copy()
+                flip = self.fall_img[self.corrupt_stage].copy()
                 flip = pygame.transform.flip(flip, True, False)
                 display.blit(flip, self.rect)
         elif not self.jump and  self.falling:
             if self.facing_right:
-                display.blit(self.fall_img, self.rect)
+                display.blit(self.fall_img[self.corrupt_stage], self.rect)
             else:
-                flip = self.fall_img.copy()
+                flip = self.fall_img[self.corrupt_stage].copy()
                 flip = pygame.transform.flip(flip, True, False)
                 display.blit(flip, self.rect)
         elif self.jump:
             self.jump_spark_ani.draw(time, display, scroll, self.jump_loc)
             if not self.rotate_jump:
                 if self.facing_right:
-                    display.blit(self.jump_img, self.rect)
+                    display.blit(self.jump_img[self.corrupt_stage], self.rect)
                 else:
-                    flip = self.jump_img.copy()
+                    flip = self.jump_img[self.corrupt_stage].copy()
                     flip = pygame.transform.flip(flip, True, False)
                     display.blit(flip, self.rect)
             else:
-                roto_jump = self.help.rotate_img(self.jump_img, self.angle_rot)
+                roto_jump = self.help.rotate_img(self.jump_img[self.corrupt_stage], self.angle_rot)
                 if self.facing_right:
                     display.blit(roto_jump, self.rect)
                 else:
@@ -194,16 +198,16 @@ class Player():
                     flip = pygame.transform.flip(flip, True, False)
                     display.blit(flip, self.rect)
         elif self.moving_right:
-            display.blit(self.run_animation[self.frame], self.rect)
+            display.blit(self.run_animation[self.corrupt_stage][self.frame], self.rect)
         elif self.moving_left:
-            flip = self.run_animation[self.frame].copy()
+            flip = self.run_animation[self.corrupt_stage][self.frame].copy()
             flip = pygame.transform.flip(flip, True, False)
             display.blit(flip, self.rect)
         else:
             if self.facing_right:
-                display.blit(self.idle_animation[self.frame], self.rect)
+                display.blit(self.idle_animation[self.corrupt_stage][self.frame], self.rect)
             else:
-                flip = self.idle_animation[self.frame].copy()
+                flip = self.idle_animation[self.corrupt_stage][self.frame].copy()
                 flip = pygame.transform.flip(flip, True, False)
                 display.blit(flip, self.rect)
         
