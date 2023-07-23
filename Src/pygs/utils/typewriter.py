@@ -18,6 +18,7 @@ class TypeWriter():
         self.current_frame = 0 
         self.waiting_to_update = False
         self.strings = ["", "", ""] # [["oneline"], ["secondline"]]
+        self.banana_turn = 0
         self.current_string_pos = 0
         self.space_count = 0
     
@@ -77,6 +78,7 @@ class TypeWriter():
                 self.current_frame += 1
                 self.current_letter = -1
                 self.space_count = 0
+                self.banana_turn += 1
                 self.current_string_pos = 0
                 self.strings = ["", "", ""]
                 self.check_x = self.start_x

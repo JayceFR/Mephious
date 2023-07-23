@@ -2,6 +2,7 @@ import pygame
 import Src.pygs.game as game
 import Src.pygs.utils.misc as misc
 
+pygame.init()
 #loading images
 help = misc.Misc()
 e = game.Game([800,500], True, is_shader= True, vertex_loc= "./Src/shader/vertex.vert", fragment_loc= "./Src/shader/fragment.frag" )
@@ -31,6 +32,17 @@ candle_img = help.load_img("./Assets/Entities/candle.png", (0,0,0), scale=2)
 pumpkin_img = help.load_img("./Assets/Entities/pumpkin.png", (0,0,0), scale=2)
 car_img = help.load_img("./Assets/Entities/car.png", (239,228,176), scale=2)
 banana_talk_ani = help.load_animation("./Assets/Sprites/banana_talk.png", 4, 3, (255,255,255))
+scissors = help.load_img("./Assets/Entities/scissors.png", (255,255,255))
+left_click_ani = help.load_animation("./Assets/Entities/left_click_ani.png", 4, 4, (255,255,255))
+paint_bucket = help.load_img("./Assets/Entities/paint_bucket.png", (255,255,255))
+injection = help.load_img("./Assets/Entities/injector.png", (255,255,255))
+e_ani = help.load_animation("./Assets/Entities/e_ani.png", 4, 2, (0,0,0))
+background_img = help.load_img("./Assets/Entities/background.png", (0,0,0), scale=3)
+jump_sound = pygame.mixer.Sound("./Assets/Music/jump.wav")
+jump_sound.set_volume(0.2)
+pickup_sound = pygame.mixer.Sound("./Assets/Music/pickup.wav")
+pickup_sound.set_volume(0.2)
+end_screen = pygame.image.load("./Assets/Entities/end_screen.png")
 talk_animations = [banana_talk_ani]
 idle_animations = [idle_animation]
 run_animations = [run_animation]
@@ -55,7 +67,8 @@ pass_e_game = {
         'run_animation' : run_animations, 
         'jump_img' : jump_frames, 
         'fall_img': fall_frames,
-        'jump_spark_ani' : jump_spark_animation
+        'jump_spark_ani' : jump_spark_animation,
+        'jump_sound' : jump_sound
         },
     'map' : {
         'map_loc' : "./Assets/Maps/level1.txt", 
@@ -76,8 +89,9 @@ pass_e_game = {
             "f" : [fence, [0, -12]],
             "k" : [pumpkin_img, [0,0]],
             "c" : [candle_img, [0,15]],
+            "extra" : [scissors, left_click_ani, paint_bucket, injection, e_ani, background_img, pickup_sound, end_screen]
             },
-        'ignore_entities' : ["g", "s", "r", "a", "b"]
+        'ignore_entities' : ["g", "s", "r", "a", "b", "extra"]
         },
     'world' : {
         'leaves' : [True, [leaf_img, leaf_img2]],
