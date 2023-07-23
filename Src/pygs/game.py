@@ -67,7 +67,7 @@ class Game():
                 self.e_entities.pop(key)
         self.firefly = None
         if game_items['world'].get("fireflies"):
-            self.firefly = fireflies.Fireflies(0, 100, 6000, 1200)
+            self.firefly = fireflies.Fireflies(0, 100, 3400, 1200)
         self.bg_particle_effect = None
         if game_items['world'].get("leaves")[0]:
             self.bg_particle_effect = bg_particles.Master(game_items['world']['leaves'][1])

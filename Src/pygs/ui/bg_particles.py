@@ -11,7 +11,7 @@ class Master():
         self.img = img
 
     def add_particles(self):
-        self.particles.append(Particles(random.randint(-100,12000)//2, random.randint(-100,-50)//2, 5, self.img))
+        self.particles.append(Particles(random.randint(-100,12000)//2, random.randint(-50,0)//2, 5, self.img))
 
     def recursive_call(self, time, display, scroll, dt):
         if self.particles != []:

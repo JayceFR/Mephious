@@ -40,9 +40,9 @@ class Fireflies():
         self.x = x 
         self.y = y
         self.width_of_entire_game = width_of_entire_game * 2
-        self.height_of_entire_game = height_of_entire_game * 2
+        self.height_of_entire_game = height_of_entire_game * 2 
         self.fireflies = []
-        for x in range(100):
+        for x in range(150):
             self.fireflies.append(FireFly(random.randint(-100,self.width_of_entire_game)//2, random.randint(-100,self.height_of_entire_game)//2, 2))
             
     def recursive_call(self, time, display, scroll):
