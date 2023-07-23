@@ -26,6 +26,10 @@ strawberry_idle_ani = help.load_animation("./Assets/Sprites/strawberry_idle.png"
 orange_talk_ani = help.load_animation("./Assets/Sprites/orange_talk.png", 4, 2, (118, 66, 138))
 pineapple_talk_ani = help.load_animation("./Assets/Sprites/pineapple_talk.png", 4, 2, (118, 66, 138))
 strawberry_talk_ani = help.load_animation("./Assets/Sprites/strawberry_talk.png", 4, 2, (118, 66, 138))
+house_img = help.load_img("./Assets/Entities/housy.png", (255,255,255), scale=2)
+candle_img = help.load_img("./Assets/Entities/candle.png", (0,0,0), scale=2)
+pumpkin_img = help.load_img("./Assets/Entities/pumpkin.png", (0,0,0), scale=2)
+car_img = help.load_img("./Assets/Entities/car.png", (239,228,176), scale=2)
 idle_animations = [idle_animation]
 run_animations = [run_animation]
 jump_frames = [jump_img]
@@ -61,9 +65,13 @@ pass_e_game = {
             "s" : [strawberry_idle_ani, strawberry_talk_ani], # strawberry
             "r" : [orange_idle_ani, orange_talk_ani], # orange
             "a" : [pineapple_idle_ani, pineapple_talk_ani], # pineapple
+            "h" : [house_img, [0,15]],
             "o" : [orange_tree, [69,110]],
             "p" : [pink_tree, [69,105]],
+            "v" : [car_img, [0,15]],
             "f" : [fence, [0, -12]],
+            "k" : [pumpkin_img, [0,0]],
+            "c" : [candle_img, [0,15]],
             },
         'ignore_entities' : ["g", "s", "r", "a"]
         },

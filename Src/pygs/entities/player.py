@@ -22,7 +22,7 @@ class Player():
         self.run_animation = items['run_animation']
         self.frame = 0
         self.frame_last_update = 0
-        self.frame_cooldown = 200
+        self.frame_cooldown = 150
         self.facing_right = True
         self.jump = False
         self.jump_img = items['jump_img']

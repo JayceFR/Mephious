@@ -62,7 +62,7 @@ class Game():
             self.bg_particle_effect = bg_particles.Master(game_items['world']['leaves'][1])
         self.entity_loc.pop("g")
         self.grass_last_update = 0
-        self.grass_cooldown = 50
+        self.grass_cooldown = 70
     
     def blit_grass(self, grasses, display, scroll, player):
         for grass in grasses:
@@ -78,6 +78,7 @@ class Game():
         true_scroll = [0,0]
         start_time = t.time()
         shader_time = 0
+        show_map = False
         #silhouette
         val = 0
         #toxic gas
@@ -88,6 +89,10 @@ class Game():
         interact_sound.set_volume(0.2)
         font = pygame.font.Font("./Assets/Fonts/jayce.ttf", 18)
         typer = typewriter.TypeWriter(font, (255,255,255), 100, 180, 300, 9, interact_sound)
+        scissor_map = pygame.image.load("./Assets/Entities/scissor_map.png").convert_alpha()
+        scissor_map.set_colorkey((0,0,0))
+        candle_map = pygame.image.load("./Assets/Entities/candle_map.png").convert_alpha()
+        candle_map.set_colorkey((0,0,0))
         strawberry_text = [{"text" : ["Hey son", "Mr.Orange wanted your red paint", "That's funny I thought he never liked red", "I am running out of time, please...", "Hmmm.. what would I get in return", "But.... I am corrupted and I would die soon", "I don't care about you", "Ok, what do you want", "Bring me a pair of scissors from Mr.Pineapple", "Let me guess, for your hair?", "Nah, just to get something in return"],
                             "can_show" : False,
                             "before_me": "pineapple",
@@ -102,7 +107,7 @@ class Game():
         orange_text = [{"text" : ["If this is not a dream, the Corrupted Mephoius banana in flesh", "Wow, that was spooky", "What brings you here?", "I need to deliver a pair of scissors to Ms.Strawberry", "Oh! There is a problem in that", "What?", "My scissors were stolen and buried by Mr.Pineapple", "I hate that pineapple", "You can find the location of the scissors in this map", "Thank you"],
                             "can_show" : False,
                             "before_me" : "strawberry",
-                            "who_is_next" : "noone", 
+                            "who_is_next" : "scissor_map", 
                             "whoami" : "orange",
                             "default" : False },
                         {"text" : ["How long can you live before the corruption takes you"],
@@ -119,6 +124,8 @@ class Game():
                              "default" : True, 
                              "whoami" : "pineapple"}]
         fruits = {"strawberry" : [self.strawberry, strawberry_text, self.strawberry_chuma, [0,125]], "orange" : [self.orange, orange_text, self.orange_chuma, [0,150]], "pineapple" : [self.pineapple, pineapple_text, self.pineapple_chuma, [-20, 125]]}
+        final_destination = [[scissor_map, (1942, 1152), False], [candle_map, (2030, 1412), False]]
+        inventory = [] # [img, loc]
         write_text = False
         click = False
         corruption_last_update = 0
@@ -129,7 +136,9 @@ class Game():
         change_corruption_last_update = 0
         corruption_particles = rot.Enchanted([1000,400])
         shader_val = 0
+        print(len(self.grasses))
         while self.run:
+            
             self.clock.tick(60)
             #print(round(self.clock.get_fps()))
             shader_time += 0.025
@@ -196,9 +205,16 @@ class Game():
                             if not dict['default']:
                                 if dict['before_me'] == correct_dict['whoami']:
                                     dict['can_show'] = True
-                    
+                    elif next_key == "scissor_map":
+                        final_destination[0][2] = True
+                        inventory = [final_destination[0][0], [-25,20]]
                     if dict['whoami'] == "strawberry":
                         fruits['strawberry'][1][1]['text'] = ["Where are my scissors?" ]
+            
+
+            if show_map:
+                if inventory != []:
+                    self.display.ui_display.blit(inventory[0], inventory[1])
             
             #Sillhouette
             self.display.sillhouette(val)
@@ -212,6 +228,12 @@ class Game():
                 self.bg_particle_effect.recursive_call(time, self.display, scroll, 1)
             if self.firefly:
                 self.firefly.recursive_call(time, self.display, scroll)
+            
+            for destination in final_destination:
+                if destination[2] == True:
+                    if self.player.get_rect().collidepoint(destination[1]):
+                        print("I am here")
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
@@ -221,4 +243,10 @@ class Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         click = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_e:
+                        if not show_map:
+                            show_map = True
+                        else:
+                            show_map = False
             self.display.clean({"noise_tex1": self.shader_stuf['noise_img']}, { "itime": int((t.time() - start_time) * 100), "time" : shader_time, "corrupted" : corrupt_binary, "shader_val" : shader_val})
