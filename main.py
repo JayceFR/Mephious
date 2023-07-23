@@ -20,6 +20,9 @@ leaf_img = pygame.image.load("./Assets/Entities/leaf.png").convert_alpha()
 leaf_img.set_colorkey((0,0,0))
 leaf_img2 = pygame.image.load("./Assets/Entities/leaf2.png").convert_alpha()
 leaf_img2.set_colorkey((0,0,0))
+orange_idle_ani = help.load_animation("./Assets/Sprites/orange_idle.png", 4, 1, (118, 66, 138))
+pineapple_idle_ani = help.load_animation("./Assets/Sprites/pineapple_idle.png", 4, 1, (118, 66, 138))
+strawberry_idle_ani = help.load_animation("./Assets/Sprites/strawberry_idle.png", 4, 1, (118, 66, 138 ))
 
 noise_img = pygame.image.load("./Src/shader/pnoise.png").convert_alpha()
 
@@ -43,11 +46,14 @@ pass_e_game = {
         'is_there_non_collide_tiles': True,
         'entities' : {
             "g" : [],
+            "s" : [strawberry_idle_ani], # strawberry
+            "r" : [orange_idle_ani], # orange
+            "a" : [pineapple_idle_ani], # pineapple
             "o" : [orange_tree, [69,110]],
             "p" : [pink_tree, [69,105]],
             "f" : [fence, [0, -12]],
             },
-        'ignore_entities' : ["g"]
+        'ignore_entities' : ["g", "s", "r", "a"]
         },
     'world' : {
         'leaves' : [True, [leaf_img, leaf_img2]],

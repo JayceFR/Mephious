@@ -1,5 +1,5 @@
 from .ui import display, grass, fireflies, bg_particles
-from .entities import player, key as keys
+from .entities import player, key as keys, fruits as fruit
 from .map import map
 import pygame, random, math, time as t
 class Game():
@@ -23,7 +23,6 @@ class Game():
         print(entities)
         self.e_entities = game_items['map'].get('entities')
         self.map = map.Map(game_items['map']['map_loc'], game_items['map']['width_of_tiles'], game_items['map']['location_of_tiles'], game_items['map']['is_there_collide_tiles'], game_items['map']['is_there_non_collide_tiles'], entities )
-        self.map.load_game_enitites([1000,400])
         self.tile_rects, self.entity_loc = self.map.get_rect()
         self.player = player.Player(game_items['player'])
         self.game_items = game_items
@@ -36,6 +35,12 @@ class Game():
                 x_pos += 2.5
                 height = random.randint(3,15)
                 self.grasses.append(grass.grass([x_pos, loc[1]+(14*2) - (height - 9) ], 2, height))
+        self.strawberry_loc = self.entity_loc['s'][0]
+        self.orange_loc = self.entity_loc['r'][0]
+        self.pineapple_loc = self.entity_loc['a'][0]
+        self.pineapple = fruit.Fruits(self.pineapple_loc, game_items['map'].get('entities')['a'][0])
+        self.orange = fruit.Fruits(self.orange_loc, game_items['map'].get('entities')['r'][0])
+        self.strawberry = fruit.Fruits(self.strawberry_loc, game_items['map'].get('entities')['s'][0])
         if game_items['map'].get("ignore_entities"):
             for key in game_items['map']['ignore_entities']:
                 self.e_entities.pop(key)
@@ -64,12 +69,11 @@ class Game():
         gas_val = 0.1549
         key = keys.Key([0,0], 16, 16)
         key.move(self.tile_rects)
+        print("grasses", len(self.grasses))
         while self.run:
             self.clock.tick(60)
-            #print(self.clock.get_fps())
+            print(self.clock.get_fps())
             time = pygame.time.get_ticks()
-            self.map.load_game_enitites([self.player.get_rect().x, self.player.get_rect().y])
-            self.tile_rects, self.entity_loc = self.map.get_rect()
             self.display.redraw()
             #Normal code
             true_scroll[0] += (self.player.get_rect().x - true_scroll[0] - 202) 
@@ -84,6 +88,14 @@ class Game():
                     self.display.blit(self.e_entities[key][0], (loc[0] - scroll[0] - self.e_entities[key][1][0], loc[1] - scroll[1] - self.e_entities[key][1][1]))
             self.player.move(self.tile_rects, time)
             self.player.draw(time, self.display, scroll)
+
+            self.strawberry.move(time, self.tile_rects)
+            self.orange.move(time, self.tile_rects)
+            self.pineapple.move(time, self.tile_rects)
+
+            self.strawberry.draw(self.display, scroll)
+            self.orange.draw(self.display, scroll)
+            self.pineapple.draw(self.display, scroll)
             '''
             #Sillhouette
             self.display.sillhouette(val)
