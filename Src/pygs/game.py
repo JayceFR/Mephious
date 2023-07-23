@@ -51,6 +51,9 @@ class Game():
         self.orange_chuma = chuma.Chuma(game_items['map'].get('entities')['r'][1])
         self.strawberry = fruit.Fruits(self.strawberry_loc, game_items['map'].get('entities')['s'][0])
         self.strawberry_chuma = chuma.Chuma(game_items['map'].get('entities')['s'][1])
+        self.banana_chuma = []
+        for animation in game_items['map'].get("entities")['b'][0]:
+            self.banana_chuma.append(chuma.Chuma(animation))
         if game_items['map'].get("ignore_entities"):
             for key in game_items['map']['ignore_entities']:
                 self.e_entities.pop(key)
@@ -125,7 +128,7 @@ class Game():
                              "whoami" : "pineapple"}]
         fruits = {"strawberry" : [self.strawberry, strawberry_text, self.strawberry_chuma, [0,125]], "orange" : [self.orange, orange_text, self.orange_chuma, [0,150]], "pineapple" : [self.pineapple, pineapple_text, self.pineapple_chuma, [-20, 125]]}
         final_destination = [[scissor_map, (1942, 1152), False], [candle_map, (2030, 1412), False]]
-        inventory = [] # [img, loc]
+        inventory = [] # [img, loc, click_to_show]
         write_text = False
         click = False
         corruption_last_update = 0
@@ -136,6 +139,7 @@ class Game():
         change_corruption_last_update = 0
         corruption_particles = rot.Enchanted([1000,400])
         shader_val = 0
+        banana_turn = 0
         print(len(self.grasses))
         while self.run:
             
@@ -184,6 +188,7 @@ class Game():
                 if pygame.rect.Rect(fruits[key][0].get_rect().x -20, fruits[key][0].get_rect().y, fruits[key][0].get_rect().width * 2, fruits[key][0].get_rect().height ).colliderect(self.player.get_rect()):
                     if click:
                         if write_text == False:
+                            banana_turn = 1
                             write_text = True
                             #typer.write(fruits[key][1])
                             correct_dict = {}
@@ -197,7 +202,12 @@ class Game():
                             typer.write(correct_dict['text'])
             if write_text:
                 write_text = not typer.update(time, self.display.ui_display, [350, 220], fruits[correct_dict['whoami']][2])
-                fruits[correct_dict['whoami']][2].draw(time, self.display.ui_display, [0,0], fruits[correct_dict['whoami']][3])
+                if banana_turn % 2 != 0:
+                    fruits[correct_dict['whoami']][2].draw(time, self.display.ui_display, [0,0], fruits[correct_dict['whoami']][3])
+                else:
+                    self.banana_chuma[corruption_level].draw(time, self.display.ui_display, [0,0], [20,165])
+                    if typer.waiting_to_update:
+                        self.banana_chuma[corruption_level].set_frame(3)
                 if not write_text and not correct_dict['default']:
                     next_key = correct_dict['who_is_next']
                     if fruits.get(next_key) != None:
@@ -207,13 +217,14 @@ class Game():
                                     dict['can_show'] = True
                     elif next_key == "scissor_map":
                         final_destination[0][2] = True
-                        inventory = [final_destination[0][0], [-25,20]]
+                        inventory = [final_destination[0][0], [-25,20], True]
                     if dict['whoami'] == "strawberry":
                         fruits['strawberry'][1][1]['text'] = ["Where are my scissors?" ]
+                
             
 
             if show_map:
-                if inventory != []:
+                if inventory != [] and inventory[2] == True:
                     self.display.ui_display.blit(inventory[0], inventory[1])
             
             #Sillhouette
@@ -229,10 +240,11 @@ class Game():
             if self.firefly:
                 self.firefly.recursive_call(time, self.display, scroll)
             
-            for destination in final_destination:
+            for pos, destination in sorted(enumerate(final_destination), reverse=True):
                 if destination[2] == True:
                     if self.player.get_rect().collidepoint(destination[1]):
-                        print("I am here")
+                        final_destination.pop(pos)
+                        inventory = [] #Add scissors here
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -249,4 +261,8 @@ class Game():
                             show_map = True
                         else:
                             show_map = False
+                    if event.key == pygame.K_RETURN:
+                        if typer.waiting_to_update:
+                            banana_turn += 1
+                            self.banana_chuma[corruption_level].reset()
             self.display.clean({"noise_tex1": self.shader_stuf['noise_img']}, { "itime": int((t.time() - start_time) * 100), "time" : shader_time, "corrupted" : corrupt_binary, "shader_val" : shader_val})

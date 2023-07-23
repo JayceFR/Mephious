@@ -30,6 +30,8 @@ house_img = help.load_img("./Assets/Entities/housy.png", (255,255,255), scale=2)
 candle_img = help.load_img("./Assets/Entities/candle.png", (0,0,0), scale=2)
 pumpkin_img = help.load_img("./Assets/Entities/pumpkin.png", (0,0,0), scale=2)
 car_img = help.load_img("./Assets/Entities/car.png", (239,228,176), scale=2)
+banana_talk_ani = help.load_animation("./Assets/Sprites/banana_talk.png", 4, 3, (255,255,255))
+talk_animations = [banana_talk_ani]
 idle_animations = [idle_animation]
 run_animations = [run_animation]
 jump_frames = [jump_img]
@@ -39,6 +41,7 @@ for x in range(4):
     run_animations.append(help.load_animation("./Assets/Sprites/banana_run_stage_" + str(x+1) + ".png", 4, 1, (255,255,255)))
     jump_frames.append(help.load_img("./Assets/Sprites/banana_jump_stage_" + str(x+1) + ".png", (255,255,255), 0,1))
     fall_frames.append(help.load_img("./Assets/Sprites/banana_jump_stage_" + str(x+1) + ".png", (255,255,255), 0,1))
+    talk_animations.append(help.load_animation("./Assets/Sprites/banana_talk_stage_" + str(x+1) + ".png", 4, 3, (255,255,255)))
 
 noise_img = pygame.image.load("./Src/shader/pnoise.png").convert_alpha()
 
@@ -62,6 +65,7 @@ pass_e_game = {
         'is_there_non_collide_tiles': True,
         'entities' : {
             "g" : [],
+            "b" : [talk_animations],
             "s" : [strawberry_idle_ani, strawberry_talk_ani], # strawberry
             "r" : [orange_idle_ani, orange_talk_ani], # orange
             "a" : [pineapple_idle_ani, pineapple_talk_ani], # pineapple
@@ -73,7 +77,7 @@ pass_e_game = {
             "k" : [pumpkin_img, [0,0]],
             "c" : [candle_img, [0,15]],
             },
-        'ignore_entities' : ["g", "s", "r", "a"]
+        'ignore_entities' : ["g", "s", "r", "a", "b"]
         },
     'world' : {
         'leaves' : [True, [leaf_img, leaf_img2]],
