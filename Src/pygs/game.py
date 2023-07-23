@@ -87,8 +87,8 @@ class Game():
         interact_sound = pygame.mixer.Sound("./Assets/Music/interact.wav")
         interact_sound.set_volume(0.2)
         font = pygame.font.Font("./Assets/Fonts/jayce.ttf", 18)
-        typer = typewriter.TypeWriter(font, (255,255,255), 100, 180, 330, 9, interact_sound)
-        strawberry_text = [{"text" : ["Hey son", "Mr.Orange wanted your red paint", "That's funny I thought he never liked red", "I am running out of time, please...", "Hmmm.. what would I get in return", "But.... I am diagnosed with Mephoius, which will slowly corrupt me", "I don't care about you", "Ok, what do you want", "Bring me a pair of scissors from Mr.Pineapple", "Let me guess, for your hair?", "Nah, just to get something in return"],
+        typer = typewriter.TypeWriter(font, (255,255,255), 100, 180, 300, 9, interact_sound)
+        strawberry_text = [{"text" : ["Hey son", "Mr.Orange wanted your red paint", "That's funny I thought he never liked red", "I am running out of time, please...", "Hmmm.. what would I get in return", "But.... I am corrupted and I would die soon", "I don't care about you", "Ok, what do you want", "Bring me a pair of scissors from Mr.Pineapple", "Let me guess, for your hair?", "Nah, just to get something in return"],
                             "can_show" : False,
                             "before_me": "pineapple",
                             "who_is_next" : "orange", 
@@ -187,7 +187,7 @@ class Game():
                                         correct_dict = dict
                             typer.write(correct_dict['text'])
             if write_text:
-                write_text = not typer.update(time, self.display.ui_display, [350, 220])
+                write_text = not typer.update(time, self.display.ui_display, [350, 220], fruits[correct_dict['whoami']][2])
                 fruits[correct_dict['whoami']][2].draw(time, self.display.ui_display, [0,0], fruits[correct_dict['whoami']][3])
                 if not write_text and not correct_dict['default']:
                     next_key = correct_dict['who_is_next']
@@ -196,6 +196,9 @@ class Game():
                             if not dict['default']:
                                 if dict['before_me'] == correct_dict['whoami']:
                                     dict['can_show'] = True
+                    
+                    if dict['whoami'] == "strawberry":
+                        fruits['strawberry'][1][1]['text'] = ["Where are my scissors?" ]
             
             #Sillhouette
             self.display.sillhouette(val)

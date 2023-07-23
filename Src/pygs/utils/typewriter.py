@@ -42,7 +42,7 @@ class TypeWriter():
         display.blit(img, (x, y))
     
     
-    def update(self, time, display, enter_loc = [350,80]):
+    def update(self, time, display, enter_loc = [350,80], chuma_object = None):
         if time - self.last_update > self.cooldown:
             self.current_letter += 1
             if self.current_letter >= len(self.list_of_texts[self.current_frame]):
@@ -68,6 +68,8 @@ class TypeWriter():
         self.draw_text(self.strings, display)
 
         if self.waiting_to_update:
+            if chuma_object:
+                chuma_object.set_frame(2)
             self.draw_enter(enter_loc[0], enter_loc[1], "Enter", display)
             key = pygame.key.get_pressed()
             if key[pygame.K_RETURN]:
@@ -78,6 +80,8 @@ class TypeWriter():
                 self.current_string_pos = 0
                 self.strings = ["", "", ""]
                 self.check_x = self.start_x
+                if chuma_object:
+                    chuma_object.reset()
                 if self.current_frame > len(self.list_of_texts) - 1:
                     return True
         return False

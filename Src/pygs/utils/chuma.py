@@ -7,18 +7,28 @@ class Chuma():
         self.frame_upate = 0
         self.repeat = repeat
         self.frame_cooldown = frame_cooldown
+        self.update = True
 
     def draw(self, time, display, scroll, loc):
         display.blit(self.animation[self.frame], (loc[0] - scroll[0], loc[1] - scroll[1]))
-        if time - self.frame_upate > self.frame_cooldown:
-            self.frame_upate = time
-            self.frame += 1
-            if self.frame >= 4:
-                if self.repeat:
-                    self.frame = 0
-                else:
-                    self.frame = 3
+        if self.update:
+            if time - self.frame_upate > self.frame_cooldown:
+                self.frame_upate = time
+                self.frame += 1
+                if self.frame >= 4:
+                    if self.repeat:
+                        self.frame = 0
+                    else:
+                        self.frame = 3
     
     def reset_frame(self):
         self.frame = 0
+    
+    def set_frame(self, frame):
+        self.frame = frame
+        self.update = False
+    
+    def reset(self):
+        self.reset_frame()
+        self.update = True
     
