@@ -58,6 +58,7 @@ class Game():
         self.background_img = game_items['map'].get('entities')['extra'][5]
         self.pickup_sound = game_items['map'].get('entities')['extra'][6]
         self.end_screen = game_items['map'].get('entities')['extra'][7]
+        self.map_sound = game_items['map'].get('entities')['extra'][8]
         self.banana_chuma = []
         for animation in game_items['map'].get("entities")['b'][0]:
             self.banana_chuma.append(chuma.Chuma(animation))
@@ -95,7 +96,7 @@ class Game():
         gas_val = 0.1549
         key = keys.Key([0,0], 16, 16)
         key.move(self.tile_rects)
-        interact_sound = pygame.mixer.Sound("./Assets/Music/interact.wav")
+        interact_sound = pygame.mixer.Sound("./Assets/Music/interact2.wav")
         interact_sound.set_volume(0.2)
         font = pygame.font.Font("./Assets/Fonts/jayce.ttf", 18)
         typer = typewriter.TypeWriter(font, (255,255,255), 100, 180, 300, 9, interact_sound)
@@ -154,6 +155,9 @@ class Game():
         final_destination = [[scissor_map, (1942, 1152), False], [candle_map, (2030, 1412), False]]
         inventory = [] # [img, loc, click_to_show]
         write_text = False
+        tutorial_text = ["Hello there I am banana", "I am affected with Mephious", "A slow poison that corrupts me", "Let me ask for help from Dr.Pineapple"]
+        tutorial_typer = typewriter.TypeWriter(font, (255,255,255), 100, 180, 300, 9, interact_sound)
+        tutorial_typer.write(tutorial_text)
         click = False
         corruption_last_update = 0
         corruption_cooldown = 60
@@ -170,11 +174,11 @@ class Game():
         sparks = []
         scroll = [0,0]
         first_time_map = False
+        tutorial = True
         pygame.mixer.music.load("./Assets/Music/bg_music.wav")
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
         while self.run:
-            
             self.clock.tick(60)
             #print(round(self.clock.get_fps()))
             shader_time += 0.025
@@ -229,8 +233,13 @@ class Game():
                     #Blit end screen
                 
 
-            self.player.move(self.tile_rects, time, write_text, game_over)
+            self.player.move(self.tile_rects, time, write_text, game_over, tutorial)
             self.player.draw(time, self.display, scroll)
+
+            if tutorial:
+                self.banana_chuma[0].draw(time, self.display.ui_display, [0,0], [20,165])
+                tutorial = not tutorial_typer.update(time, self.display.ui_display, [350,220])
+
             if change_corruption:
                 if time - change_corruption_last_update < 10000:
                     val = 50
@@ -357,6 +366,7 @@ class Game():
                         click = True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_e:
+                        self.map_sound.play()
                         if first_time_map:
                             first_time_map = False
                         if not show_map:

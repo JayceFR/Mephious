@@ -42,12 +42,15 @@ jump_sound = pygame.mixer.Sound("./Assets/Music/jump.wav")
 jump_sound.set_volume(0.2)
 pickup_sound = pygame.mixer.Sound("./Assets/Music/pickup.wav")
 pickup_sound.set_volume(0.2)
+map_sound = pygame.mixer.Sound("./Assets/Music/open_map.wav")
+map_sound.set_volume(0.2)
 end_screen = pygame.image.load("./Assets/Entities/end_screen.png")
 talk_animations = [banana_talk_ani]
 idle_animations = [idle_animation]
 run_animations = [run_animation]
 jump_frames = [jump_img]
 fall_frames = [fall_img]
+pygame.display.set_icon(leaf_img)
 for x in range(4):
     idle_animations.append(help.load_animation("./Assets/Sprites/banana_idle_stage_" + str(x+1) + ".png", 4, 1, (255,255,255)))
     run_animations.append(help.load_animation("./Assets/Sprites/banana_run_stage_" + str(x+1) + ".png", 4, 1, (255,255,255)))
@@ -89,7 +92,7 @@ pass_e_game = {
             "f" : [fence, [0, -12]],
             "k" : [pumpkin_img, [0,0]],
             "c" : [candle_img, [0,15]],
-            "extra" : [scissors, left_click_ani, paint_bucket, injection, e_ani, background_img, pickup_sound, end_screen]
+            "extra" : [scissors, left_click_ani, paint_bucket, injection, e_ani, background_img, pickup_sound, end_screen, map_sound]
             },
         'ignore_entities' : ["g", "s", "r", "a", "b", "extra"]
         },
