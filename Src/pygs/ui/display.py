@@ -38,16 +38,12 @@ class Display():
             surf = self.display.copy()
             surf = pygame.transform.scale(surf, (self.screen_w, self.screen_h))
             self.window.blit(surf, (0,0))
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
         if self.shader_obj:
             uniform['tex'] = self.window
             uniform['ui_tex'] = self.ui_display
             #self.shader_obj.draw({"tex" : self.window, "noise_tex1": noise_img, "ui_tex" : ui_display}, { "itime": int((t.time() - start_time) * 100) })
             self.shader_obj.draw(uniform, variables)
         pygame.display.flip()
-        return True
 
     def sillhouette(self, val):
         display_mask = pygame.mask.from_surface(self.display)

@@ -4,7 +4,7 @@ import Src.pygs.utils.misc as misc
 
 #loading images
 help = misc.Misc()
-e = game.Game([800,500], True, is_shader= False, vertex_loc= "./Src/shader/vertex.vert", fragment_loc= "./Src/shader/fragment.frag" )
+e = game.Game([800,500], True, is_shader= True, vertex_loc= "./Src/shader/vertex.vert", fragment_loc= "./Src/shader/fragment.frag" )
 #player
 idle_animation = help.load_animation("./Assets/Sprites/banana_idle.png", 4, 1, (255,255,255))
 print(idle_animation)
@@ -23,6 +23,8 @@ leaf_img2.set_colorkey((0,0,0))
 orange_idle_ani = help.load_animation("./Assets/Sprites/orange_idle.png", 4, 1, (118, 66, 138))
 pineapple_idle_ani = help.load_animation("./Assets/Sprites/pineapple_idle.png", 4, 1, (118, 66, 138))
 strawberry_idle_ani = help.load_animation("./Assets/Sprites/strawberry_idle.png", 4, 1, (118, 66, 138 ))
+
+font = pygame.font.Font("./Assets/Fonts/jayce.ttf", 18)
 
 noise_img = pygame.image.load("./Src/shader/pnoise.png").convert_alpha()
 

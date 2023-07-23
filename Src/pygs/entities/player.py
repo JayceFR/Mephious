@@ -92,7 +92,7 @@ class Player():
                     self.movement[1] = self.rect.y
         return collision_types
     
-    def move(self, tiles, time):
+    def move(self, tiles, time, write_text):
         self.movement = [0, 0]
 
         if self.moving_right:
@@ -137,25 +137,25 @@ class Player():
             self.rotate_jump = False
             self.angle_rot = 0
             self.falling = False
-
-        key = pygame.key.get_pressed()
-        if  key[pygame.K_a] or key[pygame.K_LEFT]:
-            self.moving_left = True
-        if key[pygame.K_d] or key[pygame.K_RIGHT]:
-            self.moving_right = True
-        if key[pygame.K_SPACE] or key[pygame.K_w]:
-            if self.jump_count > 0:
-                if time - self.jump_last_update > self.jump_cooldown:
-                    #self.music.play()
-                    self.jump = True
-                    self.air_timer = 0
-                    self.jump_loc = [self.rect.x, self.rect.y + 32]
-                    self.jump_spark_ani.reset_frame()
-                    self.jump_up_spped = 9
-                    if self.jump_count == 1:
-                        self.rotate_jump = True
-                    self.jump_count -= 1
-                    self.jump_last_update = time
+        if not write_text:
+            key = pygame.key.get_pressed()
+            if  key[pygame.K_a] or key[pygame.K_LEFT]:
+                self.moving_left = True
+            if key[pygame.K_d] or key[pygame.K_RIGHT]:
+                self.moving_right = True
+            if key[pygame.K_SPACE] or key[pygame.K_w]:
+                if self.jump_count > 0:
+                    if time - self.jump_last_update > self.jump_cooldown:
+                        #self.music.play()
+                        self.jump = True
+                        self.air_timer = 0
+                        self.jump_loc = [self.rect.x, self.rect.y + 32]
+                        self.jump_spark_ani.reset_frame()
+                        self.jump_up_spped = 9
+                        if self.jump_count == 1:
+                            self.rotate_jump = True
+                        self.jump_count -= 1
+                        self.jump_last_update = time
     
     def draw(self, time, display, scroll):
         self.display_x = self.rect.x
