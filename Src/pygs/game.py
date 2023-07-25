@@ -1,8 +1,3 @@
-#Speech for fruits
-#Corrupting of banana
-#Map 
-#Music
-#Cover page
 from .ui import display, grass, fireflies, bg_particles, rot
 from .entities import player, key as keys, fruits as fruit
 from .map import map
